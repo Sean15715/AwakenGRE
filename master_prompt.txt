@@ -1,0 +1,206 @@
+Project: GRE "Drill Sergeant" AI Coach (MVP)
+
+1. Executive Summary
+
+We are building a high-intensity, "tough love" GRE Reading Comprehension drill app.
+Core Value: Help students understand why they got questions wrong through a specific "Redemption Arc" workflow.
+Vibe: Sarcastic, high-empathy, focused on "Atomic Habits" consistency.
+
+2. Tech Stack & Constraints
+
+Frontend: React (Vite) + Tailwind CSS + Lucide React (Icons).
+
+Backend: Python (FastAPI).
+
+Database: In-Memory / LocalStorage for MVP (Mock the DB layer for now).
+
+LLM Integration: Async wrappers for LLM calls (OpenAI/Anthropic).
+
+Design Principle: Mobile-first, brutalist but clean UI. Dark mode default.
+
+3. Product Workflow (The "Happy Path")
+
+Phase 1: Setup & Generation (Async)
+
+User inputs: Difficulty (Beginner/Int/Adv) and Exam Date.
+
+Backend: Calls LLM_Generator to create a Passage + 3 Questions.
+
+Frontend: Shows "Generating Custom Session..." (Don't worry about latency).
+
+Phase 2: The Exam (Silent Mode)
+
+User reads Passage.
+
+User answers 3 Questions.
+
+CRITICAL: No immediate feedback. No red/green lights. Pure testing.
+
+User clicks Submit.
+
+Phase 3: The Analysis & Redemption (The Core Loop)
+
+Triggered only if Score < 100%
+
+Backend: * Identifies WRONG answers.
+
+Spawns PARALLEL LLM calls (one per wrong question).
+
+Each call receives: {Passage, Question, User_Wrong_Ans, Correct_Ans}.
+
+Frontend (Redemption UI):
+
+Shows the Question again.
+
+Visuals: User's wrong answer is struck through (Red).
+
+The Coach Box: Displays hint_for_retry (Spoiler-free logic attack).
+
+User Action: Must select a NEW answer.
+
+Logic:
+
+If Correct: Green flash -> Show "Nailed it" -> Next Mistake.
+
+If Wrong again: Red flash -> Show full_explanation (Answer Reveal) -> Next Mistake.
+
+Phase 4: The Victory Lap (Summary)
+
+Backend: Calls LLM_Summary with session stats.
+
+Frontend: Displays Score, Trap Types identified, and a "Coach Message" praising the effort/recovery.
+
+4. API Contracts (The "Bible")
+
+A. Endpoint: POST /generate-session
+
+Response:
+
+{
+  "session_id": "uuid",
+  "passage": {
+    "title": "The Economic Impact of Bees",
+    "text": "..."
+  },
+  "questions": [
+    {
+      "id": 101,
+      "text": "The primary purpose of the passage is...",
+      "options": {
+        "A": "To refute...",
+        "B": "To describe...",
+        "C": "To argue...",
+        "D": "To analyze...",
+        "E": "To compare..."
+      },
+      "correct_option": "C" // Frontend must hide this!
+    }
+  ]
+}
+
+
+B. Endpoint: POST /analyze-mistake (Internal Backend Function)
+
+Note: This is the output of the LLM Analysis, sent to Frontend after Submit.
+
+LLM Input (The Triplet):
+{ Passage, Question, User_Wrong_Answer ("B"), Correct_Answer ("D") }
+
+LLM Output / API Response:
+
+{
+  "question_id": 101,
+  "user_mistake_diagnosis": {
+    "trap_type": "Out of Scope",
+    "hint_for_retry": "You chose B. Look at line 12. The author mentions 'prices', but does he link them to 'quality'? No. You made an assumption.",
+    "full_explanation": "The correct answer is D. B is incorrect because [Reason]. D is correct because [Evidence]."
+  }
+}
+
+
+C. Endpoint: POST /session-summary
+
+Response:
+
+{
+  "original_score": "1/3",
+  "final_mastery": "3/3",
+  "traps_identified": ["Out of Scope", "Distortion"],
+  "coach_message": {
+    "headline": "Good recovery.",
+    "body": "You started sloppy on Q2, but you fixed the logic. Consistency beats intensity. See you tomorrow."
+  }
+}
+
+
+5. System Prompts (The "Brain")
+
+Role 1: The Content Generator
+
+SYSTEM_PROMPT: "You are a veteran GRE Tutor. Generate a dense, academic GRE Reading Comprehension passage (150 words) with 3 questions.
+
+Q1: Main Idea.
+
+Q2: Inference (Must be supported by text).
+
+Q3: Detail.
+
+Distractors: Must use standard GRE traps (Extreme Language, Out of Scope).
+
+Output: Strict JSON."
+
+Role 2: The Logic Surgeon (The Parallel Analyst)
+
+SYSTEM_PROMPT: "You are a specific GRE Coach. A student got a question WRONG.
+
+INPUT: Passage, Question, User's Wrong Choice, Actual Correct Answer.
+
+TASK: Explain the flaw in the User's choice.
+
+RULE: SPOILER FIREWALL. Do NOT reveal the correct answer or explain why the correct answer is right in the hint_for_retry field. Only attack the logic of the wrong answer.
+
+TONE: Direct, slightly sarcastic, constructive.
+
+Output JSON keys: trap_type, hint_for_retry, full_explanation."
+
+Role 3: The Hype Man (Summary)
+
+SYSTEM_PROMPT: "You are an Atomic Habits style performance coach.
+
+INPUT: Session Stats.
+
+TASK: Write a brief, high-dopamine summary. Praise the act of retrying and fixing mistakes.
+
+TONE: Warm, serious, encouraging."
+
+6. Implementation Checklist
+
+Scaffold Backend (FastAPI):
+
+Setup pydantic models for the JSON schemas above.
+
+Create the Manager class to handle Async LLM calls.
+
+Implement async def analyze_mistakes(mistakes_list): Use asyncio.gather to run LLM calls in parallel (1 per wrong question).
+
+Scaffold Frontend (React):
+
+Context: Create SessionContext to manage state (SETUP -> EXAM -> ANALYZING -> RETRY -> SUMMARY).
+
+Component PassageView: Split screen (Passage Left / Question Right).
+
+Component RedemptionCard: The UI for the retry loop. Needs logic to handle the "Show Hint" vs "Show Answer" states.
+
+Mocking:
+
+Since we don't have a live DB, mock the "Save Session" functions to just return success.
+
+Styling:
+
+Use Tailwind for a "Focus Mode" aesthetic. Dark grays, stark white text.
+
+Accent colors: Orange (Coach/Warning), Green (Success), Red (Error).
+
+7. Execution Instruction
+
+Start by initializing the project structure. Then, build the Backend pydantic models to ensure our data contract is solid. Once the backend models are done, move to the Frontend State Machine.
