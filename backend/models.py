@@ -1,6 +1,6 @@
 """
 Pydantic models for GRE Drill Sergeant API.
-These define the strict JSON contracts between frontend and backend.
+These define the pydantic是什么库？作用是什么？strict JSON contracts between frontend and backend.
 """
 
 from pydantic import BaseModel, Field
