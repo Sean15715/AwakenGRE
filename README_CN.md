@@ -37,7 +37,7 @@
 Repo/
 ├── backend/
 │   ├── main.py              # FastAPI 应用 + 路由定义
-│   ├── models.py            # Pydantic 数据模型（严格 JSON 契约）
+│   ├── schemas.py           # Pydantic 数据模型（严格 JSON 契约）
 │   ├── llm_service.py       # Mock LLM 服务（待替换为真实 API）
 │   └── requirements.txt     # Python 依赖
 ├── frontend/

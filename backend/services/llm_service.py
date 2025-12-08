@@ -1,7 +1,7 @@
 import json
 from typing import Tuple, List, Dict
 from openai import AsyncOpenAI
-from models import (
+from schemas import (
     Passage,
     Question,
     MistakeDiagnosis,

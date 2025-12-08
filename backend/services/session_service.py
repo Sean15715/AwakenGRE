@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 import asyncio
-from models import (
+from schemas import (
     GenerateSessionResponse,
     AnalyzeMistakeResponse,
     SessionSummaryResponse,

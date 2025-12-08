@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 
-from models import (
+from schemas import (
     GenerateSessionRequest,
     GenerateSessionResponse,
     SubmitAnswersRequest,
