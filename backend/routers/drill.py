@@ -16,7 +16,7 @@ router = APIRouter()
 @router.post("/generate-session", response_model=GenerateSessionResponse)
 async def generate_session(request: GenerateSessionRequest):
     """
-    Generate a new GRE session with a passage and 3 questions.
+    Generate a new GRE session with a passage and questions.
     """
     try:
         return await session_service.create_session(request.difficulty, request.exam_date)

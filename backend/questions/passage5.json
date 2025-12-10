@@ -1,0 +1,36 @@
+[
+    {
+      "id": "passage_005",
+      "exercise_id": "exercise_01",
+      "text": "Great comic art is never otherwordly, it does not seek to mystify us, and it does not deny ambiguity by branding as evil whatever differs from good. Great comic artists assume that truth may bear all lights, and thus they seek to accentuate contradictions in social action, not gloss over or transcend them by appeals to extrasocial symbols of divine ends, cosmic purpose, or laws of nature. The moment of transcendence in great comic art is a social moment, born out of the conviction that we are human, even though we try to be gods. The comic community to which artists address themselves is a community of reasoning, loving, joyful, compassionate beings, who are willing to assume the human risks of acting rationally. Without invoking gods or demons, great comic art arouses courage in reason, courage which grows out of trust in what human beings can do as humans.",
+      "questions": [
+        {
+          "id": "1",
+          "question_text": "It can be inferred from the passage that the author admires great comic artists primarily for their",
+          "options": {
+            "A": "ability to understand the frequently subtle differences between good and evil",
+            "B": "ability to reconcile the contradictions in human behavior",
+            "C": "ability to distinguish between rational and irrational behavior",
+            "D": "insistence on confronting the truth about the human condition",
+            "E": "insistence on condemning human faults and weaknesses"
+          },
+          "correct_option": "D",
+          "golden_explanation": "The passage praises comic artists for facing human contradictions directly and refusing to hide behind mystical explanations. The author admires them because they deal honestly with what it means to be human. That’s exactly what option D says—confronting the truth about the human condition."
+        },
+        {
+          "id": "2",
+          "question_text": "Which of the following is the most accurate description of the organization of the passage?",
+          "options": {
+            "A": "A sequence of observations leading to a prediction",
+            "B": "A list of inferences drawn from facts stated at the beginning of the passage",
+            "C": "A series of assertions related to one general subject",
+            "D": "A statement of the major idea, followed by specific examples",
+            "E": "A succession of ideas moving from specific to general"
+          },
+          "correct_option": "C",
+          "golden_explanation": "The passage strings together several claims about what great comic art is like, all tied to one main idea about its human-centered nature. It doesn't offer predictions, examples, or a shift from specific to general—it’s just a series of connected statements. That’s exactly option C."
+        }
+      ]
+    }
+  ]
+  

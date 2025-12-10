@@ -14,12 +14,12 @@ client = AsyncOpenAI(
     base_url="https://api.deepseek.com"
 )
 
-async def generate_passage_and_questions(difficulty: str) -> Tuple[Passage, List[Question]]:
+    async def generate_passage_and_questions(difficulty: str) -> Tuple[Passage, List[Question]]:
     """
-    Generates a GRE Reading Comprehension passage and 3 questions using DeepSeek.
+    Generates a GRE Reading Comprehension passage and varying number of questions (2-4) using DeepSeek.
     """
     prompt = f"""
-    Generate a GRE Reading Comprehension passage and 3 questions.
+    Generate a GRE Reading Comprehension passage and 2-4 questions (randomly decide number).
     Difficulty: {difficulty}
     
     Return ONLY a JSON object with the following structure (no markdown, no extra text):

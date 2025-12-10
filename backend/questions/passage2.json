@@ -1,0 +1,36 @@
+[
+    {
+      "id": "passage_002",
+      "exercise_id": "exercise_01",
+      "text": "Tocqueville, apparently, was wrong. Jacksonian America was not a fluid, egalitarian society where individual wealth and poverty were ephemeral conditions. At least to argues E. Pessen in his iconoclastic study of the very rich in the United States between 1825 and 1850.\n\nPessen does present a quantity of examples, together with some refreshingly intelligible statistics, to establish the existence of an inordinately wealthy class. Though active in commerce or the professions, most of the wealthy were not self-made, but had inherited family fortunes. In no sense mercurial, these great fortunes survived the financial panics that destroyed lesser ones. Indeed, in several cities the wealthiest one percent constantly increased its share until by 1850 it owned half of the community's wealth.\n\nAlthough these observations are true, Pessen overestimates their importance by concluding from them that the undoubted progress toward inequality in the late eighteenth century continued in the Jacksonian period and that the United States was a class-ridden, plutocratic society even before industrialization.",
+      "questions": [
+        {
+          "id": "1",
+          "question_text": "According to the passage, Pessen indicates that all of the following were true of the very wealthy in the United States between 1825 and 1850 EXCEPT:",
+          "options": {
+            "A": "They formed a distinct upper class.",
+            "B": "Many of them were able to increase their holdings.",
+            "C": "Some of them worked as professionals or in business.",
+            "D": "Most of them accumulated their own fortunes.",
+            "E": "Many of them retained their wealth in spite of financial upheavals."
+          },
+          "correct_option": "D",
+          "golden_explanation": "The passage says the wealthy were usually *not* self-made and instead inherited their fortunes. That means claiming most of them built their own wealth goes against what the passage states. So D is the one statement that does NOT match what Pessen says."
+        },
+        {
+          "id": "2",
+          "question_text": "Which of the following best states the author’s main point?",
+          "options": {
+            "A": "Pessen’s study has overturned the previously established view of the social and economic structure of early nineteenth-century America.",
+            "B": "Tocqueville’s analysis of the United States in the Jacksonian era remains the definitive account of this period.",
+            "C": "Pessen’s study is valuable primarily because it shows the continuity of the social system in the United States throughout the nineteenth century.",
+            "D": "The social patterns and political power of the extremely wealthy in the United States between 1825 and 1850 are well documented.",
+            "E": "Pessen challenges a view of the social and economic system in the United States from 1825 to 1850, but he draws conclusions that are incorrect."
+          },
+          "correct_option": "E",
+          "golden_explanation": "The author summarizes Pessen’s argument but then clearly says Pessen ‘overestimates’ what his evidence proves. In other words, Pessen’s challenge to the traditional view is interesting, but his final conclusion is wrong. That matches option E perfectly."
+        }
+      ]
+    }
+  ]
+  

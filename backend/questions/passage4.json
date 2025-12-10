@@ -1,0 +1,49 @@
+[
+    {
+      "id": "passage_004",
+      "exercise_id": "exercise_01",
+      "text": "Extraordinary creative activity has been characterized as revolutionary, flying in the face of what is established and producing not what is acceptable but what will become accepted. According to this formulation, highly creative activity transcends the limits of an existing form and establishes a new principle of organization. However, the idea that extraordinary creativity transcends established limits in misleading when it is applied to the arts, even though it may be valid for the sciences. Difference between highly creative art and highly creative science arise in part from a difference in their goals. For the sciences, a new theory is the goal and end result of the creative act. Innovative science produces new propositions in terms of which diverse phenomena can be related to one another in more coherent ways. Such phenomena as a brilliant diamond or a nesting bird are relegated to the role of data, serving as the means for formulating or testing a new theory. The goal of highly creative art is very different: the phenomenon itself becomes the direct product of the creative act. Shakespeare’s Hamlet is not a tract about the behavior of indecisive princes or the uses of political power; nor is Picasso’s painting Guernica primarily a propositional statement about the Spanish Civil War or the evils of fascism. What highly creative artistic activity produces is not a new generalization that transcends established limits, but rather an aesthetic particular. Aesthetic particulars produced by the highly creative artist extend or exploit, in an innovative way, the limits of an existing form, rather than transcend that form.\n\nThis is not to deny that a highly creative artist sometimes establishes a new principle of organization in the history of an artistic field; the composer Monteverdi, who created music of the highest aesthetic value, comes to mind. More generally, however, whether or not a composition establishes a new principle in the history of music has little bearing on its aesthetic worth. Because they embody a new principle of organization, some musical works, such as the operas of the Florentine Camerata, are of signal historical importance, but few listeners or musicologists would include these among the great works of music. On the other hand, Mozart’s The Marriage of Figaro is surely among the masterpieces of music even though its modest innovations are confined to extending existing means. It has been said of Beethoven that he toppled the rules and freed music from the stifling confines of convention. But a close study of his compositions reveals that Beethoven overturned no fundamental rules. Rather, he was an incomparable strategist who exploited limits—the rules, forms, and conventions that he inherited from predecessors such as Haydn and Mozart, Handel and Bach—in strikingly original ways.",
+      "questions": [
+        {
+          "id": "1",
+          "question_text": "The author implies that an innovative scientific contribution is one that",
+          "options": {
+            "A": "is cited with high frequency in the publications of other scientists",
+            "B": "is accepted immediately by the scientific community",
+            "C": "does not relegate particulars to the role of data",
+            "D": "presents the discovery of a new scientific fact",
+            "E": "introduces a new valid generalization"
+          },
+          "correct_option": "E",
+          "golden_explanation": "The passage says innovative science creates new propositions—new big-picture ideas that explain lots of different things more coherently. That’s exactly what a new valid generalization is, so option E fits the author’s description perfectly."
+        },
+        {
+          "id": "2",
+          "question_text": "The author regards the idea that all highly creative artistic activity transcends limits with",
+          "options": {
+            "A": "deep skepticism",
+            "B": "strong indignation",
+            "C": "marked indifference",
+            "D": "moderate amusement",
+            "E": "sharp derision"
+          },
+          "correct_option": "A",
+          "golden_explanation": "The author spends the whole passage arguing that great art usually works *within* existing forms, not beyond them. That shows doubt, not anger or mockery. He clearly doesn’t buy the idea, but he isn’t emotional about it—so A, skepticism, is the best match."
+        },
+        {
+          "id": "3",
+          "question_text": "Which of the following statements would most logically conclude the last paragraph of the passage?",
+          "options": {
+            "A": "Unlike Beethoven, however, even the greatest of modern composers, such as Stravinsky, did not transcend existing musical forms.",
+            "B": "In similar fashion, existing musical forms were even further exploited by the next generation of great European composers.",
+            "C": "Thus, many of the great composers displayed the same combination of talents exhibited by Monteverdi.",
+            "D": "By contrast, the view that creativity in the arts exploits but does not transcend limits is supported in the field of literature.",
+            "E": "Actually, Beethoven’s most original works were largely unappreciated at the time that they were first performed."
+          },
+          "correct_option": "B",
+          "golden_explanation": "The paragraph ends by showing that even Beethoven didn’t break the rules but used the old rules in brilliant new ways. The most natural next step is to say that other great composers after him did the same thing—continuing this pattern of exploiting limits creatively. That’s exactly what option B does."
+        }
+      ]
+    }
+  ]
+  

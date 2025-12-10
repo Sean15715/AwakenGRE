@@ -5,7 +5,8 @@ from schemas import (
     AnalyzeMistakeResponse,
     SessionSummaryResponse,
     SessionData,
-    Question
+    Question,
+    Passage
 )
 from services.llm_service import (
     generate_passage_and_questions,
@@ -20,10 +21,69 @@ class SessionService:
 
     async def create_session(self, difficulty: str, exam_date: str) -> GenerateSessionResponse:
         """
-        Generate a new session calling the LLM service.
+        Generate a new session using local file (offline mode).
+        Randomly selects a passage from backend/questions/*.json
         """
-        # Call LLM to generate content
-        passage, questions = await generate_passage_and_questions(difficulty)
+        import json
+        import os
+        import random
+
+        # Load from local file
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        questions_dir = os.path.join(base_path, "questions")
+        
+        try:
+            # List all passage files
+            passage_files = [f for f in os.listdir(questions_dir) if f.startswith("passage") and f.endswith(".json")]
+            
+            if not passage_files:
+                 raise FileNotFoundError("No passage files found")
+
+            # TEMPORARY DEBUG: Filter out files with only 1 question to test frontend rendering
+            # We need to peek into files or just assume based on knowledge
+            # Let's just log what we picked
+            
+            selected_file = random.choice(passage_files)
+            file_path = os.path.join(questions_dir, selected_file)
+            
+            print(f"[DEBUG] Selected file: {selected_file}")
+
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                passage_data = data[0]
+                
+            questions_count = len(passage_data["questions"])
+            print(f"[DEBUG] Questions found in file: {questions_count}")
+            
+            passage = Passage(
+                title=f"Passage {selected_file.replace('.json', '')}", # Use filename as title or extract if avail
+                text=passage_data["text"]
+            )
+            
+            questions = []
+            for q in passage_data["questions"]:
+                # Parse "q_001" -> 1, or "1" -> 1, or hash string
+                try:
+                    raw_id = str(q["id"])
+                    if "_" in raw_id:
+                        q_id = int(raw_id.split("_")[1])
+                    else:
+                        q_id = int(raw_id)
+                except (IndexError, ValueError, AttributeError):
+                    # Fallback if id format is different
+                    q_id = abs(hash(str(q["id"]))) % 100000 
+                
+                questions.append(Question(
+                    id=q_id,
+                    text=q["question_text"],
+                    options=q["options"],
+                    correct_option=q["correct_option"]
+                ))
+                
+        except Exception as e:
+            print(f"Error loading local file: {e}")
+            # Fallback to LLM or empty if file fails
+            passage, questions = await generate_passage_and_questions(difficulty)
 
         # Create response object (which generates session_id)
         response = GenerateSessionResponse(

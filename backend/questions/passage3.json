@@ -1,0 +1,23 @@
+[
+    {
+      "id": "passage_003",
+      "exercise_id": "exercise_01",
+      "text": "Anaerobic glycolysis is a process in which energy is produced, without oxygen, through the breakdown of muscle glycogen into lactic acid and adenosine triphosphate (ATP), the energy provider. The amount of energy that can be produced anaerobically is a function of the amount of glycogen present—in all vertebrates about 0.5 percent of their muscles’ wet weight. Thus the anaerobic energy reserves of a vertebrate are proportional to the size of the animal. If, for example, some predators had attacked a 100-ton dinosaur, normally torpid, the dinosaur would have been able to generate almost instantaneously, via anaerobic glycolysis, the energy of 3,000 humans at maximum oxidative metabolic energy production.",
+      "questions": [
+        {
+          "id": "1",
+          "question_text": "The passage’s suggestion that the total anaerobic energy reserves of a vertebrate are proportional to the vertebrate’s size is based on which of the following assumptions?",
+          "options": {
+            "A": "Larger vertebrates conserve more energy than smaller vertebrates",
+            "B": "Larger vertebrates use less oxygen per unit weight than smaller vertebrates",
+            "C": "The ability of a vertebrate to consume food is a function of its size",
+            "D": "The amount of muscle tissue in a vertebrate is directly related to its size",
+            "E": "The size of a vertebrate is proportional to the quantity of energy it can utilize"
+          },
+          "correct_option": "D",
+          "golden_explanation": "The passage says anaerobic energy depends on how much glycogen is in the muscles, and that vertebrates all have the same percentage of muscle glycogen. For energy to scale with body size, the creature must have *more total muscle* as it gets bigger. That idea is exactly what option D states."
+        }
+      ]
+    }
+  ]
+  
