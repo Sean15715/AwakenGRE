@@ -9,7 +9,6 @@ from schemas import (
     Passage
 )
 from services.llm_service import (
-    generate_passage_and_questions,
     analyze_mistake,
     generate_summary
 )
@@ -82,8 +81,7 @@ class SessionService:
                 
         except Exception as e:
             print(f"Error loading local file: {e}")
-            # Fallback to LLM or empty if file fails
-            passage, questions = await generate_passage_and_questions(difficulty)
+            raise e
 
         # Create response object (which generates session_id)
         response = GenerateSessionResponse(
