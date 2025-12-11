@@ -15,7 +15,7 @@ from alembic import context
 # Import our models and database config
 from database import Base, DATABASE_URL
 # Explicit imports ensure models are registered
-from models import User, DrillSession 
+from models import User 
 
 config = context.config
 

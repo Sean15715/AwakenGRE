@@ -52,7 +52,7 @@ async def analyze_mistake(
             hint_for_retry="Could not generate analysis.",
             full_explanation="Error loading analysis prompt."
         )
-
+    
     try:
         response = await client.chat.completions.create(
             model="deepseek-chat",
@@ -111,7 +111,7 @@ async def generate_summary(
             headline="Session Complete",
             body="Good job completing the drill."
         )
-
+    
     try:
         response = await client.chat.completions.create(
             model="deepseek-chat",

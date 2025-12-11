@@ -32,6 +32,8 @@ Go back to line 12. The text uses the word 'frequently.' In normal conversation,
 “This is a classic mix-up. You saw that 'X' and 'Y' appeared in the same sentence, so you assumed 'X' caused 'Y.'
 This is the 'Correlation vs. Causation' trap. The author says these two things happened at the same time, but never claims one forced the other to happen. You inferred a connection that isn't there. Next time, read that sentence one more time—strictly literally.”
 
+
+
 # Output Format
 Return ONLY a valid JSON object with the following keys:
 {{

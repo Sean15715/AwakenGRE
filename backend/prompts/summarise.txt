@@ -23,7 +23,7 @@ Generate a JSON object containing a Headline and a Body message.
 
 # Output Schema
 Return ONLY a valid JSON object with the following keys:
-{
+{{
   "headline": "A short, 2-5 word vibe check (e.g., 'Sloppy but Saved', 'Ice Cold Logic')",
   "body": "The natural language recap string (max 40 words)."
-}
+}}

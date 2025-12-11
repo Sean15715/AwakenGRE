@@ -4,13 +4,35 @@ These define the pydantic是什么库？作用是什么？strict JSON contracts 
 """
 
 from pydantic import BaseModel, Field
-from typing import Dict, List, Literal
+from typing import Dict, List, Literal, Optional
 from uuid import uuid4
+from datetime import datetime
 
 
 # ============================================================================
 # REQUEST MODELS
 # ============================================================================
+
+class UserCreate(BaseModel):
+    username: str
+    email: str
+    password: str
+    exam_date: Optional[str] = None  # ISO format string (YYYY-MM-DD)
+
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+class UserUpdate(BaseModel):
+    exam_date: Optional[str] = None  # ISO format string (YYYY-MM-DD)
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
 
 class GenerateSessionRequest(BaseModel):
     difficulty: Literal["Beginner", "Intermediate", "Advanced"]
@@ -33,6 +55,21 @@ class SessionSummaryRequest(BaseModel):
 # ============================================================================
 # RESPONSE MODELS
 # ============================================================================
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    streak_days: int
+    exam_date: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
 
 class Passage(BaseModel):
     title: str

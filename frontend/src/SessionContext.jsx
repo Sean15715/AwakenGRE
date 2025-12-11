@@ -4,10 +4,13 @@
  */
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { updateUser as apiUpdateUser } from './api';
 
 const SessionContext = createContext();
 
 export const PHASES = {
+  REGISTER: 'REGISTER',
+  LOGIN: 'LOGIN',
   HOME: 'HOME',
   SETUP: 'SETUP',
   GENERATING: 'GENERATING',
@@ -50,6 +53,10 @@ export function SessionProvider({ children }) {
   const [savedDifficulty, setSavedDifficulty] = useState(null);
   const [savedExamDate, setSavedExamDate] = useState(null);
 
+  // Auth state
+  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
+
   // Load streak and preferences from localStorage on mount
   useEffect(() => {
     const savedStreak = parseInt(localStorage.getItem('gre_streak') || '0', 10);
@@ -57,12 +64,35 @@ export function SessionProvider({ children }) {
     const configured = localStorage.getItem('gre_configured') === 'true';
     const difficulty = localStorage.getItem('gre_difficulty');
     const examDate = localStorage.getItem('gre_exam_date');
+    const savedToken = localStorage.getItem('gre_token');
+    const savedUser = localStorage.getItem('gre_user');
 
     setStreak(savedStreak);
     setLastSessionDate(savedDate);
     setHasConfigured(configured);
     setSavedDifficulty(difficulty);
     setSavedExamDate(examDate);
+
+    if (savedToken) {
+        setToken(savedToken);
+        if (savedUser) {
+            try {
+                setUser(JSON.parse(savedUser));
+            } catch (e) {
+                console.error("Failed to parse user data", e);
+            }
+        }
+    }
+
+    if (configured) {
+      setPhase(PHASES.HOME);
+    } else {
+        // If not configured, user might need to register/login or setup
+        // For now, let's default to SETUP or REGISTER. 
+        // Let's keep it as SETUP for guest flow, or switch to REGISTER if we want to force auth.
+        // For MVP, maybe we add a button in SETUP to go to REGISTER/LOGIN.
+        // So keeping default logic is fine.
+    }
   }, []);
 
   // Save streak to localStorage
@@ -120,6 +150,57 @@ export function SessionProvider({ children }) {
     setHasConfigured(true);
     setSavedDifficulty(difficulty);
     setSavedExamDate(examDate);
+  };
+
+  const login = (accessToken, userData) => {
+      setToken(accessToken);
+      setUser(userData);
+      localStorage.setItem('gre_token', accessToken);
+      if (userData) {
+          localStorage.setItem('gre_user', JSON.stringify(userData));
+          
+          // Sync exam date if available
+          if (userData.exam_date) {
+              // Convert to YYYY-MM-DD for input
+              const dateStr = new Date(userData.exam_date).toISOString().split('T')[0];
+              setSavedExamDate(dateStr);
+              localStorage.setItem('gre_exam_date', dateStr);
+          }
+      }
+      // If we have exam date, we can consider user configured? Or maybe just let them configure.
+      // Let's redirect to SetupScreen (which is default behavior if no hasConfigured)
+      // Or Home if hasConfigured.
+      // Actually, let's redirect to SETUP so they can confirm difficulty/date before starting.
+      setPhase(PHASES.SETUP); 
+  };
+
+  const logout = () => {
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem('gre_token');
+      localStorage.removeItem('gre_user');
+      setPhase(PHASES.LOGIN);
+  };
+
+  const updateUserProfile = async (updateData) => {
+      if (!token) return;
+      
+      try {
+        const updatedUser = await apiUpdateUser(token, updateData);
+        setUser(updatedUser);
+        localStorage.setItem('gre_user', JSON.stringify(updatedUser));
+        
+        // Sync local preferences if needed
+        if (updatedUser.exam_date) {
+             const dateStr = new Date(updatedUser.exam_date).toISOString().split('T')[0];
+             setSavedExamDate(dateStr);
+             localStorage.setItem('gre_exam_date', dateStr);
+        }
+        return updatedUser;
+      } catch (error) {
+          console.error("Failed to update user profile", error);
+          throw error;
+      }
   };
 
   // Reset session (for new session) - keeps user config
@@ -190,6 +271,13 @@ export function SessionProvider({ children }) {
     savedDifficulty,
     savedExamDate,
     saveConfiguration,
+
+    // Auth
+    token,
+    user,
+    login,
+    logout,
+    updateUserProfile,
 
     // Helpers
     calculateScores,

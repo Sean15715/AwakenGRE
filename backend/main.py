@@ -5,7 +5,7 @@ Handles session generation, mistake analysis, and summary generation.
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import drill
+from routers import drill, auth
 
 # ============================================================================
 # APP INITIALIZATION
@@ -31,6 +31,7 @@ app.add_middleware(
 # ============================================================================
 
 app.include_router(drill.router)
+app.include_router(auth.router)
 
 @app.get("/")
 async def root():

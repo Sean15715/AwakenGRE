@@ -20,7 +20,10 @@ export default function SetupScreen() {
     hasConfigured,
     savedDifficulty,
     savedExamDate,
-    saveConfiguration
+    saveConfiguration,
+    token,
+    user,
+    logout
   } = useSession();
   const [selectedDifficulty, setSelectedDifficulty] = useState('Intermediate');
   const [examDateInput, setExamDateInput] = useState('');
@@ -28,12 +31,23 @@ export default function SetupScreen() {
   const [error, setError] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
 
-  // Auto-generate session if user has already configured
+  // Initialize exam date from saved preference
+  useEffect(() => {
+    if (savedExamDate) {
+      setExamDateInput(savedExamDate);
+    }
+  }, [savedExamDate]);
+
+  // Auto-generate session if user has already configured - REMOVED
+  // We now route to HomeScreen instead
+  /*
   useEffect(() => {
     if (hasConfigured && savedDifficulty && savedExamDate) {
       startSession(savedDifficulty, savedExamDate);
     }
   }, [hasConfigured]);
+  */
+
 
   const startSession = async (difficulty, examDate) => {
     // Internal function that takes specific params
@@ -96,13 +110,35 @@ export default function SetupScreen() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
-      {/* Settings Button (Top Right) */}
-      <button
-        onClick={() => setShowSettings(true)}
-        className="absolute top-6 right-6 p-3 bg-[var(--bg-secondary)] rounded-lg hover:bg-[var(--bg-tertiary)] transition-all"
-      >
-        <Settings className="w-5 h-5 text-[var(--text-secondary)]" />
-      </button>
+      {/* Top Controls */}
+      <div className="absolute top-6 right-6 flex items-center gap-3">
+        {token ? (
+            <div className="flex items-center gap-3">
+                <span className="text-[var(--text-secondary)] font-medium">
+                    Hello, {user?.username}
+                </span>
+                <button
+                    onClick={logout}
+                    className="px-4 py-2 bg-[var(--bg-secondary)] rounded-lg hover:bg-red-500 hover:text-white text-[var(--text-secondary)] font-semibold transition-all"
+                >
+                    Logout
+                </button>
+            </div>
+        ) : (
+          <button
+            onClick={() => setPhase(PHASES.LOGIN)}
+            className="px-4 py-2 bg-[var(--bg-secondary)] rounded-lg hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] font-semibold transition-all"
+          >
+            Login / Sign Up
+          </button>
+        )}
+        <button
+          onClick={() => setShowSettings(true)}
+          className="p-3 bg-[var(--bg-secondary)] rounded-lg hover:bg-[var(--bg-tertiary)] transition-all"
+        >
+          <Settings className="w-5 h-5 text-[var(--text-secondary)]" />
+        </button>
+      </div>
 
       <div className="max-w-2xl w-full">
         {/* Header */}

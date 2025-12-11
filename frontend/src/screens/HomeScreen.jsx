@@ -1,9 +1,9 @@
 /**
- * HomeScreen - Welcome back screen (no reconfiguration needed)
+ * HomeScreen - Welcome back screen
  */
 
 import { useState } from 'react';
-import { Zap, Settings, Play } from 'lucide-react';
+import { Zap, Settings, Play, Calendar } from 'lucide-react';
 import { useSession, PHASES } from '../SessionContext';
 import { generateSession } from '../api';
 import SettingsScreen from './SettingsScreen';
@@ -23,6 +23,20 @@ export default function HomeScreen() {
 
   const [loading, setLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
+  // Calculate days remaining
+  const getDaysLeft = () => {
+    if (!savedExamDate) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const exam = new Date(savedExamDate);
+    exam.setHours(0, 0, 0, 0);
+    const diffTime = exam - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const daysLeft = getDaysLeft();
 
   const handleStartDrill = async () => {
     try {
@@ -91,14 +105,15 @@ export default function HomeScreen() {
         {/* Current Config Display */}
         <div className="mb-12 p-6 bg-[var(--bg-secondary)] rounded-lg">
           <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">YOUR SETTINGS</h3>
-          <div className="flex justify-center gap-8">
-            <div>
-              <p className="text-sm text-[var(--text-secondary)] mb-1">Difficulty</p>
-              <p className="text-lg font-semibold">{savedDifficulty}</p>
-            </div>
-            <div>
-              <p className="text-sm text-[var(--text-secondary)] mb-1">Exam Date</p>
-              <p className="text-lg font-semibold">{new Date(savedExamDate).toLocaleDateString()}</p>
+          <div className="flex justify-center">
+            <div className="flex flex-col items-center">
+              <p className="text-sm text-[var(--text-secondary)] mb-1">Countdown</p>
+              <div className="flex items-center gap-2">
+                <Calendar className={`w-5 h-5 ${daysLeft <= 30 ? 'text-orange-500' : 'text-[var(--text-secondary)]'}`} />
+                <p className={`text-lg font-bold ${daysLeft <= 30 ? 'text-orange-500' : ''}`}>
+                   {daysLeft !== null ? `${daysLeft} Days Left` : 'Set Date'}
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -70,3 +70,93 @@ export async function getSessionSummary({ session_id, original_score, final_mast
 
   return response.json();
 }
+
+/**
+ * Register a new user
+ * @param {Object} userData
+ * @param {string} userData.username
+ * @param {string} userData.email
+ * @param {string} userData.password
+ * @param {string} userData.exam_date
+ * @returns {Promise<Object>} Created user data
+ */
+export async function registerUser(userData) {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userData)
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || `Registration failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Login user
+ * @param {Object} credentials
+ * @param {string} credentials.username
+ * @param {string} credentials.password
+ * @returns {Promise<Object>} Token data
+ */
+export async function loginUser(credentials) {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credentials)
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || `Login failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Get current user details
+ * @param {string} token - Access Token
+ * @returns {Promise<Object>} User data
+ */
+export async function getCurrentUser(token) {
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    method: 'GET',
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json' 
+    }
+  });
+
+  if (!response.ok) {
+     throw new Error(`Failed to fetch user: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Update current user details
+ * @param {string} token - Access Token
+ * @param {Object} updateData - Data to update (e.g. { exam_date: "..." })
+ * @returns {Promise<Object>} Updated user data
+ */
+export async function updateUser(token, updateData) {
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    method: 'PUT',
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json' 
+    },
+    body: JSON.stringify(updateData)
+  });
+
+  if (!response.ok) {
+     throw new Error(`Failed to update user: ${response.statusText}`);
+  }
+
+  return response.json();
+}

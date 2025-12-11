@@ -3,6 +3,12 @@ Repo/
 │   ├── alembic/                 # 数据库迁移脚本目录
 │   │   ├── versions/            # 存放具体的迁移版本文件 (.py)
 │   │   └── env.py               # Alembic 环境配置（连接 DB 与 Models）
+│   ├── prompts/                 # LLM 提示词模板
+│   │   ├── endgame.txt          # 总结阶段提示词
+│   │   └── redemption.txt       # 错题订正提示词
+│   ├── questions/               # 本地题库 (JSON)
+│   │   ├── passage1.json
+│   │   └── ...
 │   ├── routers/
 │   │   └── drill.py             # 路由层：处理 HTTP 请求
 │   ├── services/

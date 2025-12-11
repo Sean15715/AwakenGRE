@@ -5,6 +5,8 @@
 import { SessionProvider, useSession, PHASES } from './SessionContext';
 import HomeScreen from './screens/HomeScreen';
 import SetupScreen from './screens/SetupScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import LoginScreen from './screens/LoginScreen';
 import ExamScreen from './screens/ExamScreen';
 import RedemptionScreen from './screens/RedemptionScreen';
 import SummaryScreen from './screens/SummaryScreen';
@@ -13,6 +15,10 @@ function AppContent() {
   const { phase } = useSession();
 
   switch (phase) {
+    case PHASES.REGISTER:
+      return <RegisterScreen />;
+    case PHASES.LOGIN:
+      return <LoginScreen />;
     case PHASES.HOME:
       return <HomeScreen />;
     case PHASES.SETUP:

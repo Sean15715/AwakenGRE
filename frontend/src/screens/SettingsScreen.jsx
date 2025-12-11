@@ -3,12 +3,15 @@
  */
 
 import { useState } from 'react';
-import { RotateCcw, AlertTriangle, X } from 'lucide-react';
+import { RotateCcw, AlertTriangle, X, Calendar, Save } from 'lucide-react';
 import { useSession, PHASES } from '../SessionContext';
 
 export default function SettingsScreen({ onClose }) {
-  const { resetSession } = useSession();
+  const { resetSession, user, updateUserProfile, savedExamDate } = useSession();
   const [showConfirm, setShowConfirm] = useState(false);
+  const [examDate, setExamDate] = useState(savedExamDate || '');
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState(null);
 
   const handleReset = () => {
     // Clear ALL localStorage data
@@ -19,6 +22,23 @@ export default function SettingsScreen({ onClose }) {
 
     // Refresh page to reload everything
     window.location.reload();
+  };
+
+  const handleSaveDate = async () => {
+    if (!user) return; // Should allow guest to save locally? Currently context handles local save via saveConfiguration.
+                       // But here we are specifically targeting user profile update.
+    
+    setIsSaving(true);
+    setSaveMessage(null);
+    try {
+        await updateUserProfile({ exam_date: examDate });
+        setSaveMessage('Date saved!');
+        setTimeout(() => setSaveMessage(null), 2000);
+    } catch (e) {
+        setSaveMessage('Failed to save.');
+    } finally {
+        setIsSaving(false);
+    }
   };
 
   return (
@@ -37,6 +57,41 @@ export default function SettingsScreen({ onClose }) {
         <p className="text-sm text-[var(--text-secondary)] mb-6">
           Manage your app data and preferences
         </p>
+
+        {/* Exam Date Section (Only if logged in for now, to sync with backend) */}
+        {user && (
+        <div className="bg-[var(--bg-tertiary)] p-4 rounded-lg mb-4">
+            <div className="flex items-start gap-3 mb-4">
+                <Calendar className="w-5 h-5 text-[var(--accent-primary)] flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                    <h3 className="font-semibold mb-1">Exam Date</h3>
+                    <p className="text-sm text-[var(--text-secondary)] mb-2">
+                        Update your target exam date.
+                    </p>
+                    <div className="flex gap-2">
+                        <input 
+                            type="date" 
+                            value={examDate}
+                            onChange={(e) => setExamDate(e.target.value)}
+                            className="flex-1 px-3 py-2 bg-[var(--bg-secondary)] rounded border border-gray-700 text-white focus:outline-none focus:border-[var(--accent-primary)]"
+                        />
+                        <button 
+                            onClick={handleSaveDate}
+                            disabled={isSaving}
+                            className="px-3 py-2 bg-[var(--accent-primary)] rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
+                        >
+                            {isSaving ? '...' : <Save className="w-4 h-4" />}
+                        </button>
+                    </div>
+                    {saveMessage && (
+                        <p className={`text-xs mt-2 ${saveMessage.includes('Failed') ? 'text-red-400' : 'text-green-400'}`}>
+                            {saveMessage}
+                        </p>
+                    )}
+                </div>
+            </div>
+        </div>
+        )}
 
         {/* Reset Section */}
         <div className="bg-[var(--bg-tertiary)] p-4 rounded-lg mb-4">

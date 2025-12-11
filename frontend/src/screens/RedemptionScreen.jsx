@@ -4,8 +4,8 @@
  * User retries with hint. If wrong again, show full explanation.
  */
 
-import { useState } from 'react';
-import { AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { AlertCircle, CheckCircle, XCircle, RotateCcw, Eye } from 'lucide-react';
 import { useSession, PHASES } from '../SessionContext';
 
 export default function RedemptionScreen() {
@@ -21,13 +21,24 @@ export default function RedemptionScreen() {
     examAnswers
   } = useSession();
 
-  const [showHint, setShowHint] = useState(true);
-  const [showExplanation, setShowExplanation] = useState(false);
+  // Phases within the redemption of a single question
+  // 'VIEW_HINT' -> 'RETRYING' -> 'FEEDBACK' (Correct/Wrong) -> 'REVEALED'
+  const [step, setStep] = useState('VIEW_HINT'); 
   const [feedback, setFeedback] = useState(null); // 'correct' or 'wrong'
-
+  
   const currentMistake = mistakes[currentMistakeIndex];
   const question = questions.find((q) => q.id === currentMistake.question_id);
   const userWrongAnswer = examAnswers[question.id];
+
+  // Reset state when moving to next mistake
+  useEffect(() => {
+    setStep('VIEW_HINT');
+    setFeedback(null);
+  }, [currentMistakeIndex]);
+
+  const handleRetryStart = () => {
+    setStep('RETRYING');
+  };
 
   const handleSelectAnswer = (option) => {
     // Don't allow re-selecting the same wrong answer from exam
@@ -44,39 +55,26 @@ export default function RedemptionScreen() {
     if (option === question.correct_option) {
       // Correct!
       setFeedback('correct');
-      setShowHint(false);
-      setShowExplanation(false);
-
-      // Move to next mistake after short delay
-      setTimeout(() => {
-        if (currentMistakeIndex < mistakes.length - 1) {
-          setCurrentMistakeIndex(currentMistakeIndex + 1);
-          setFeedback(null);
-          setShowHint(true);
-          setShowExplanation(false);
-        } else {
-          // All mistakes fixed, go to summary
-          setPhase(PHASES.SUMMARY);
-        }
-      }, 1500);
+      setStep('FEEDBACK');
+      // Wait for user to click "Next Mistake"
     } else {
       // Wrong again!
       setFeedback('wrong');
-      setShowHint(false);
-      setShowExplanation(true);
+      setStep('FEEDBACK');
+      // Unlike correct, we don't auto-advance. We wait for user to "Show Answer".
+    }
+  };
 
-      // Move to next mistake after user sees explanation
-      setTimeout(() => {
-        if (currentMistakeIndex < mistakes.length - 1) {
-          setCurrentMistakeIndex(currentMistakeIndex + 1);
-          setFeedback(null);
-          setShowHint(true);
-          setShowExplanation(false);
-        } else {
-          // All mistakes reviewed, go to summary
-          setPhase(PHASES.SUMMARY);
-        }
-      }, 4000);
+  const handleShowAnswer = () => {
+    setStep('REVEALED');
+  };
+
+  const handleNextMistake = () => {
+    if (currentMistakeIndex < mistakes.length - 1) {
+      setCurrentMistakeIndex(currentMistakeIndex + 1);
+    } else {
+      // All mistakes fixed, go to summary
+      setPhase(PHASES.SUMMARY);
     }
   };
 
@@ -116,13 +114,14 @@ export default function RedemptionScreen() {
                 {Object.entries(question.options).map(([key, value]) => {
                   const isWrongAnswer = key === userWrongAnswer;
                   const isSelected = redemptionAnswers[question.id] === key;
-                  const isCorrect = key === question.correct_option && showExplanation;
+                  const isCorrect = key === question.correct_option && step === 'REVEALED';
+                  const isDisabled = step === 'VIEW_HINT' || step === 'FEEDBACK' || step === 'REVEALED';
 
                   return (
                     <button
                       key={key}
                       onClick={() => handleSelectAnswer(key)}
-                      disabled={isWrongAnswer || feedback !== null}
+                      disabled={isDisabled || isWrongAnswer}
                       className={`
                         w-full text-left p-4 rounded-lg border-2 transition-all relative
                         ${isWrongAnswer
@@ -135,7 +134,9 @@ export default function RedemptionScreen() {
                                 ? 'border-[var(--accent-green)] bg-[var(--accent-green)]/10'
                                 : isSelected
                                   ? 'border-[var(--accent-secondary)] bg-[var(--accent-secondary)]/10'
-                                  : 'border-[var(--bg-tertiary)] hover:border-[var(--text-secondary)]'
+                                  : isDisabled
+                                    ? 'border-[var(--bg-tertiary)] opacity-50 cursor-not-allowed'
+                                    : 'border-[var(--bg-tertiary)] hover:border-[var(--text-secondary)]'
                         }
                       `}
                     >
@@ -157,39 +158,106 @@ export default function RedemptionScreen() {
               </div>
             </div>
 
-            {/* Coach Box */}
-            <div className={`
-              p-6 rounded-lg border-2
-              ${showHint
-                ? 'bg-[var(--accent-secondary)]/10 border-[var(--accent-secondary)]'
-                : showExplanation
-                  ? 'bg-[var(--accent-red)]/10 border-[var(--accent-red)]'
-                  : 'bg-[var(--accent-green)]/10 border-[var(--accent-green)]'
-              }
-            `}>
-              <div className="flex items-start gap-3">
-                <AlertCircle className={`
-                  w-6 h-6 flex-shrink-0 mt-1
-                  ${showHint ? 'text-[var(--accent-secondary)]' : showExplanation ? 'text-[var(--accent-red)]' : 'text-[var(--accent-green)]'}
-                `} />
-                <div>
-                  <h4 className="font-bold mb-2">
-                    {showHint && 'COACH HINT'}
-                    {showExplanation && 'ANSWER REVEAL'}
-                    {feedback === 'correct' && 'NAILED IT'}
-                  </h4>
-                  <p className="text-sm leading-relaxed">
-                    {showHint && currentMistake.user_mistake_diagnosis.hint_for_retry}
-                    {showExplanation && currentMistake.user_mistake_diagnosis.full_explanation}
-                    {feedback === 'correct' && "Good recovery. That's the logic. Moving to next mistake..."}
-                  </p>
-                  {showHint && (
-                    <p className="text-xs mt-3 text-[var(--text-secondary)]">
-                      Trap Type: {currentMistake.user_mistake_diagnosis.trap_type}
-                    </p>
-                  )}
+            {/* Coach Box & Controls */}
+            <div className="space-y-4">
+              {/* 1. Coach Hint (Always shown initially) */}
+              {(step === 'VIEW_HINT' || step === 'RETRYING') && (
+                <div className="p-6 rounded-lg border-2 bg-[var(--accent-secondary)]/10 border-[var(--accent-secondary)]">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="w-6 h-6 flex-shrink-0 mt-1 text-[var(--accent-secondary)]" />
+                    <div>
+                      <h4 className="font-bold mb-2">COACH HINT</h4>
+                      <p className="text-sm leading-relaxed">
+                        {currentMistake.user_mistake_diagnosis.hint_for_retry}
+                      </p>
+                      <p className="text-xs mt-3 text-[var(--text-secondary)]">
+                        Trap Type: {currentMistake.user_mistake_diagnosis.trap_type}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* 2. Retry Button */}
+              {step === 'VIEW_HINT' && (
+                <button
+                  onClick={handleRetryStart}
+                  className="w-full py-4 bg-[var(--accent-secondary)] text-white font-bold rounded-lg hover:bg-purple-700 transition-all flex items-center justify-center gap-2"
+                >
+                  <RotateCcw className="w-5 h-5" />
+                  RETRY QUESTION
+                </button>
+              )}
+
+              {/* 3. Feedback: Wrong Again */}
+              {step === 'FEEDBACK' && feedback === 'wrong' && (
+                <div className="p-6 rounded-lg border-2 bg-[var(--accent-red)]/10 border-[var(--accent-red)]">
+                  <div className="flex items-start gap-3">
+                    <XCircle className="w-6 h-6 flex-shrink-0 mt-1 text-[var(--accent-red)]" />
+                    <div>
+                      <h4 className="font-bold mb-2">STILL INCORRECT</h4>
+                      <p className="text-sm leading-relaxed mb-4">
+                        That wasn't quite it. You cannot retry again, but you can view the solution.
+                      </p>
+                      <button
+                        onClick={handleShowAnswer}
+                        className="py-2 px-4 bg-[var(--accent-red)] text-white font-semibold rounded hover:bg-red-700 transition-all flex items-center gap-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Show Answer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 4. Feedback: Correct */}
+              {step === 'FEEDBACK' && feedback === 'correct' && (
+                <div className="space-y-4">
+                  <div className="p-6 rounded-lg border-2 bg-[var(--accent-green)]/10 border-[var(--accent-green)]">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-6 h-6 flex-shrink-0 mt-1 text-[var(--accent-green)]" />
+                      <div>
+                        <h4 className="font-bold mb-2">NAILED IT</h4>
+                        <p className="text-sm leading-relaxed">
+                          Good recovery. That's the logic. Moving to next mistake...
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleNextMistake}
+                    className="w-full py-4 bg-[var(--bg-tertiary)] text-white font-bold rounded-lg hover:bg-[var(--bg-tertiary)]/80 transition-all"
+                  >
+                    NEXT MISTAKE →
+                  </button>
+                </div>
+              )}
+
+              {/* 5. Answer Reveal (Full Explanation) */}
+              {step === 'REVEALED' && (
+                <div className="space-y-4">
+                  <div className="p-6 rounded-lg border-2 bg-[var(--accent-green)]/10 border-[var(--accent-green)]">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-6 h-6 flex-shrink-0 mt-1 text-[var(--accent-green)]" />
+                      <div>
+                        <h4 className="font-bold mb-2">ANSWER REVEAL</h4>
+                        <p className="text-sm leading-relaxed">
+                          {currentMistake.user_mistake_diagnosis.full_explanation}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={handleNextMistake}
+                    className="w-full py-4 bg-[var(--bg-tertiary)] text-white font-bold rounded-lg hover:bg-[var(--bg-tertiary)]/80 transition-all"
+                  >
+                    NEXT MISTAKE →
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
