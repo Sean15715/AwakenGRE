@@ -160,15 +160,15 @@ export default function RedemptionScreen() {
 
             {/* Coach Box & Controls */}
             <div className="space-y-4">
-              {/* 1. Coach Hint (Always shown initially) */}
+              {/* 1. Full Explanation (Always shown initially - the complete mistake analysis) */}
               {(step === 'VIEW_HINT' || step === 'RETRYING') && (
                 <div className="p-6 rounded-lg border-2 bg-[var(--accent-secondary)]/10 border-[var(--accent-secondary)]">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="w-6 h-6 flex-shrink-0 mt-1 text-[var(--accent-secondary)]" />
                     <div>
-                      <h4 className="font-bold mb-2">COACH HINT</h4>
-                      <p className="text-sm leading-relaxed">
-                        {currentMistake.user_mistake_diagnosis.hint_for_retry}
+                      <h4 className="font-bold mb-2">MISTAKE ANALYSIS</h4>
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {currentMistake.user_mistake_diagnosis.full_explanation}
                       </p>
                       <p className="text-xs mt-3 text-[var(--text-secondary)]">
                         Trap Type: {currentMistake.user_mistake_diagnosis.trap_type}
@@ -235,16 +235,19 @@ export default function RedemptionScreen() {
                 </div>
               )}
 
-              {/* 5. Answer Reveal (Full Explanation) */}
+              {/* 5. Answer Reveal (Show correct answer only, not mistake analysis) */}
               {step === 'REVEALED' && (
                 <div className="space-y-4">
                   <div className="p-6 rounded-lg border-2 bg-[var(--accent-green)]/10 border-[var(--accent-green)]">
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-6 h-6 flex-shrink-0 mt-1 text-[var(--accent-green)]" />
                       <div>
-                        <h4 className="font-bold mb-2">ANSWER REVEAL</h4>
+                        <h4 className="font-bold mb-2">CORRECT ANSWER</h4>
+                        <p className="text-lg font-semibold mb-2 text-[var(--accent-green)]">
+                          {question.correct_option}
+                        </p>
                         <p className="text-sm leading-relaxed">
-                          {currentMistake.user_mistake_diagnosis.full_explanation}
+                          {question.options[question.correct_option]}
                         </p>
                       </div>
                     </div>
