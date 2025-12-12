@@ -167,11 +167,22 @@ export function SessionProvider({ children }) {
               localStorage.setItem('gre_exam_date', dateStr);
           }
       }
-      // If we have exam date, we can consider user configured? Or maybe just let them configure.
-      // Let's redirect to SetupScreen (which is default behavior if no hasConfigured)
-      // Or Home if hasConfigured.
-      // Actually, let's redirect to SETUP so they can confirm difficulty/date before starting.
-      setPhase(PHASES.SETUP); 
+      
+      // Check if user is already configured (has exam_date and difficulty)
+      const localDifficulty = localStorage.getItem('gre_difficulty');
+      const localExamDate = localStorage.getItem('gre_exam_date') || (userData?.exam_date ? new Date(userData.exam_date).toISOString().split('T')[0] : null);
+      const isConfigured = localStorage.getItem('gre_configured') === 'true' || (localDifficulty && localExamDate);
+      
+      if (isConfigured) {
+          // User is already configured, go to HOME
+          setHasConfigured(true);
+          if (localDifficulty) setSavedDifficulty(localDifficulty);
+          if (localExamDate) setSavedExamDate(localExamDate);
+          setPhase(PHASES.HOME);
+      } else {
+          // User needs to configure, go to SETUP
+          setPhase(PHASES.SETUP);
+      }
   };
 
   const logout = () => {
